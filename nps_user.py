@@ -32,6 +32,12 @@ def avaliacao(nivel_satisfacao):
     # Consultando a quantidade de promotores
     cursorHistdb.execute("SELECT COUNT(*) FROM histAvaliacoes WHERE avaliacao BETWEEN 9 AND 10")
     promotores = cursorHistdb.fetchone()[0]
+
+    # Calculo para descobrir o NPS
+    total_avaliacoes = detratores+neutros+promotores
+    nps = ((promotores - detratores) / total_avaliacoes) * 100 if total_avaliacoes > 0 else 0
+
+
     
     cursorNPS.execute("""
                       
