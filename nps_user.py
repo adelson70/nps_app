@@ -1,13 +1,20 @@
 import tkinter as tk
 from tkinter.font import Font
 from datetime import datetime
+import sqlite3
 
+# vão ter dois bancos de dados
+# um como historico
+# e outro como uma linha somente, sem data e hora
+
+# Função principal onde chamara as outras funções e tambem fara o calculo do NPS
 def avaliacao(nivel_satisfacao):
     data_completa = get_data()
     horario_completo = get_horario()
 
-    print(data_completa, horario_completo, nivel_satisfacao)
+    return ...
 
+# Função que retornar a data dd/mm/aaaa
 def get_data():
     data_completa = datetime.now()
     dia = data_completa.day
@@ -17,7 +24,7 @@ def get_data():
     data_formatada = f'{dia:02}/{mes:02}/{ano}'
     return data_formatada
 
-
+# Função que retorna o horario hh:mm
 def get_horario():
     data_completa = datetime.now()
     hora = data_completa.hour
@@ -25,6 +32,9 @@ def get_horario():
 
     horario_formatado = f'{hora:02}:{minuto:02}'
     return horario_formatado
+
+# Função que cria ou incrementa o banco de dados que é um historico das avalições
+
 
 # GUI
 janela = tk.Tk()
