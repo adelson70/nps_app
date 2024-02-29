@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter.font import Font
 from datetime import datetime
-import pandas as pd
 
 # vão ter duas planilhas
 # um como historico
@@ -11,16 +10,15 @@ import pandas as pd
 def avaliacao(nivel_satisfacao):
     data_completa = get_data()
     horario_completo = get_horario()
-    df_hist = planilha_historica()
-    df_nps = planilha_geral()
 
-    # Incrementando avaliacoes na planilha historica
-    df_hist['data']
-    df_hist['horario']
-    df_hist['avaliacao']
-    
+    # Incrementando valores referentes a planilha historica
+    valores = {
+        'data':data_completa,
+        'horario':horario_completo,
+        'avaliacao':nivel_satisfacao,
+    }
 
-    print(df_nps.head())
+    print(valores)
 
 # Função que retornar a data dd/mm/aaaa
 def get_data():
@@ -41,26 +39,7 @@ def get_horario():
     horario_formatado = f'{hora:02}:{minuto:02}'
     return horario_formatado
 
-# Função que cria ou incrementa o banco de dados que é um historico das avalições
-def planilha_historica():
-    try:
-        df = pd.read_csv('historico_avaliacoes.csv')
 
-    except FileNotFoundError:
-        df = pd.DataFrame(columns=['data','horario','avaliacao'])
-        df['data'] = pd.to_datetime(df['data'])
-
-    return df
-
-# Função para criar a planilha com apenas 1 dado por coluna
-def planilha_geral():
-    try:
-        df = pd.read_csv('avaliacoes.csv')
-
-    except FileNotFoundError:
-        df = pd.DataFrame(columns=['promotor','neutro','detrator','total','nps','status'])
-
-    return df
 
 # GUI
 janela = tk.Tk()
