@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter.font import Font
 from datetime import datetime
+import sqlite3 as sql
 
-# vão ter duas planilhas
+# vão ter 2 dbs
 # um como historico
 # e outro como uma linha somente, sem data e hora
 
@@ -10,15 +11,33 @@ from datetime import datetime
 def avaliacao(nivel_satisfacao):
     data_completa = get_data()
     horario_completo = get_horario()
+    cursorHistdb, conexaoHistdb = db_hist()
+    cursorNPS, conexaoNPS = db_nps()
 
-    # Incrementando valores referentes a planilha historica
-    valores = {
-        'data':data_completa,
-        'horario':horario_completo,
-        'avaliacao':nivel_satisfacao,
-    }
+    # Incrementando a tabela de historico de avaliacoes
+    cursorHistdb.execute("""
+                         INSERT INTO histAvaliacoes(data, horario, avaliacao)
+                         VALUES (?,?,?)""",(data_completa, horario_completo, nivel_satisfacao))
+    conexaoHistdb.commit()
 
-    print(valores)
+    # Atualizando a tabela de NPS
+    # Consultando a quantidade de detratores
+    cursorHistdb.execute("SELECT COUNT(*) FROM histAvaliacoes WHERE avaliacao BETWEEN 0 AND 6")
+    detratores = cursorHistdb.fetchone()[0]
+    
+    # Consultando a quantidade de neutros
+    cursorHistdb.execute("SELECT COUNT(*) FROM histAvaliacoes WHERE avaliacao BETWEEN 7 AND 8")
+    neutros = cursorHistdb.fetchone()[0]
+    
+    # Consultando a quantidade de promotores
+    cursorHistdb.execute("SELECT COUNT(*) FROM histAvaliacoes WHERE avaliacao BETWEEN 9 AND 10")
+    promotores = cursorHistdb.fetchone()[0]
+    
+    cursorNPS.execute("""
+                      
+                      """)
+    
+
 
 # Função que retornar a data dd/mm/aaaa
 def get_data():
@@ -39,8 +58,50 @@ def get_horario():
     horario_formatado = f'{hora:02}:{minuto:02}'
     return horario_formatado
 
+# Banco de dados com historico de avaliacoes
+def db_hist():
+    conexao = sql.connect('histAvaliacao.db')
+    cursor = conexao.cursor()
+    
+    # Verifica se o banco de dados já existe
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='histAvaliacoes'")
+    tabela_existe = cursor.fetchone()
 
+    if tabela_existe:
+        return (cursor, conexao)
+    
+    else:
+        # Cria a tabela de dados
+        cursor.execute("""
+CREATE TABLE histAvaliacoes
+(data DATE,
+horario TIME,
+avaliacao TEXT)""")
 
+        return (cursor, conexao)
+    
+# Banco de dados NPS
+def db_nps():
+    conexao = sql.connect('nps.db')
+    cursor = conexao.cursor()
+    
+    # Verifica se o banco de dados já existe
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='nps'")
+    tabela_existe = cursor.fetchone()
+
+    if tabela_existe:
+        return (cursor, conexao)
+    
+    else:
+        # Cria a tabela de dados
+        cursor.execute("""
+CREATE TABLE nps
+(promotores INT,
+neutros INT,
+detratores INT,
+nps INT)""")
+
+        return (cursor, conexao)
 # GUI
 janela = tk.Tk()
 janela.title('Avaliação de Satisfação')
