@@ -34,15 +34,20 @@ def avaliacao(nivel_satisfacao):
 
     # Calculo para descobrir o NPS
     total_avaliacoes = detratores+neutros+promotores
-    nps = ((promotores - detratores) / total_avaliacoes) * 100 if total_avaliacoes > 0 else 0
+    nps = f'{int(((promotores - detratores) / total_avaliacoes) * 100)}' if total_avaliacoes > 0 else 0
 
+    print(detratores, neutros, promotores, nps)
     # Atualizando a tabela de NPS    
     cursorNPS.execute("""
-                      UPDATE nps SET promotores=?, neutros=?, detratores=?, nps=?
-                      """,(promotores, neutros, detratores, nps))
-    conexaoNPS.commit()
-    
+                  UPDATE nps 
+                  SET promotores=?, neutros=?, detratores=?, nps=?
+                  """, (promotores, neutros, detratores, nps))
 
+    conexaoNPS.commit()
+
+    cursorNPS.execute('select * from nps')
+    for l in cursorNPS.fetchall():
+        print(l)
 
 # Função que retornar a data dd/mm/aaaa
 def get_data():
@@ -81,7 +86,7 @@ def db_hist():
 CREATE TABLE histAvaliacoes
 (data DATE,
 horario TIME,
-avaliacao TEXT)""")
+avaliacao INTEGER)""")
 
         return (cursor, conexao)
     
@@ -101,11 +106,18 @@ def db_nps():
         # Cria a tabela de dados
         cursor.execute("""
 CREATE TABLE nps
-(promotores INT,
-neutros INT,
-detratores INT,
-nps INT)""")
-
+(promotores INTEGER DEFAULT 0,
+neutros INTEGER DEFAULT 0,
+detratores INTEGER DEFAULT 0,
+nps INTEGER DEFAULT 0)""")
+        
+        # Forçando a criação default 
+        cursor.execute("SELECT COUNT(*) FROM nps")
+        if cursor.fetchone()[0] == 0:
+            cursor.execute("""INSERT INTO nps(promotores, neutros, detratores, nps) 
+                           VALUES(?,?,?,?)""",(0, 0, 0, 0))
+        conexao.commit()
+        
         return (cursor, conexao)
 # GUI
 janela = tk.Tk()
