@@ -36,7 +36,6 @@ def avaliacao(nivel_satisfacao):
     total_avaliacoes = detratores+neutros+promotores
     nps = f'{int(((promotores - detratores) / total_avaliacoes) * 100)}' if total_avaliacoes > 0 else 0
 
-    print(detratores, neutros, promotores, nps)
     # Atualizando a tabela de NPS    
     cursorNPS.execute("""
                   UPDATE nps 
@@ -44,10 +43,6 @@ def avaliacao(nivel_satisfacao):
                   """, (promotores, neutros, detratores, nps))
 
     conexaoNPS.commit()
-
-    cursorNPS.execute('select * from nps')
-    for l in cursorNPS.fetchall():
-        print(l)
 
 # Função que retornar a data dd/mm/aaaa
 def get_data():
@@ -116,7 +111,6 @@ nps INTEGER DEFAULT 0)""")
         if cursor.fetchone()[0] == 0:
             cursor.execute("""INSERT INTO nps(promotores, neutros, detratores, nps) 
                            VALUES(?,?,?,?)""",(0, 0, 0, 0))
-        conexao.commit()
         
         return (cursor, conexao)
 # GUI
