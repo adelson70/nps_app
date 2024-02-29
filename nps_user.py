@@ -1,12 +1,30 @@
 import tkinter as tk
 from tkinter.font import Font
+from datetime import datetime
 
 def avaliacao(nivel_satisfacao):
-    return saida_info(nivel_satisfacao)
+    data_completa = get_data()
+    horario_completo = get_horario()
 
-def saida_info(satisfacao):
+    print(data_completa, horario_completo, nivel_satisfacao)
 
-    return ...
+def get_data():
+    data_completa = datetime.now()
+    dia = data_completa.day
+    mes = data_completa.month
+    ano = data_completa.year
+
+    data_formatada = f'{dia:02}/{mes:02}/{ano}'
+    return data_formatada
+
+
+def get_horario():
+    data_completa = datetime.now()
+    hora = data_completa.hour
+    minuto = data_completa.minute
+
+    horario_formatado = f'{hora:02}:{minuto:02}'
+    return horario_formatado
 
 # GUI
 janela = tk.Tk()
