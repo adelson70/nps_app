@@ -20,7 +20,6 @@ def avaliacao(nivel_satisfacao):
                          VALUES (?,?,?)""",(data_completa, horario_completo, nivel_satisfacao))
     conexaoHistdb.commit()
 
-    # Atualizando a tabela de NPS
     # Consultando a quantidade de detratores
     cursorHistdb.execute("SELECT COUNT(*) FROM histAvaliacoes WHERE avaliacao BETWEEN 0 AND 6")
     detratores = cursorHistdb.fetchone()[0]
@@ -37,11 +36,11 @@ def avaliacao(nivel_satisfacao):
     total_avaliacoes = detratores+neutros+promotores
     nps = ((promotores - detratores) / total_avaliacoes) * 100 if total_avaliacoes > 0 else 0
 
-
-    
+    # Atualizando a tabela de NPS    
     cursorNPS.execute("""
-                      
-                      """)
+                      UPDATE nps SET promotores=?, neutros=?, detratores=?, nps=?
+                      """,(promotores, neutros, detratores, nps))
+    conexaoNPS.commit()
     
 
 
