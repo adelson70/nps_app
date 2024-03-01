@@ -3,10 +3,6 @@ from tkinter.font import Font
 from datetime import datetime
 import sqlite3 as sql
 
-# vão ter 2 dbs
-# um como historico
-# e outro como uma linha somente, sem data e hora
-
 # Função principal onde chamara as outras funções e tambem fara o calculo do NPS
 def avaliacao(nivel_satisfacao):
     data_completa = get_data()
