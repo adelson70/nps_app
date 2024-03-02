@@ -5,10 +5,6 @@ import sqlite3 as sql
 
 # Função para atualizar a label
 def atualizar_label(score):
-# Ruim – NPS entre -100 e -1;
-# Razoável – NPS entre 0 e 49;
-# Muito bom – NPS entre 50 e 74;
-# Excelente – NPS entre 75 e 100.
     global janela
     global status
     global valor_nps
